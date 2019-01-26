@@ -1,4 +1,8 @@
 vcl 4.0;
+# add this file to /etc/varnish/conf.d to enable API route and include in order between vartier.*.vcl
+# vartier.20.*.vcl is for route config
+# register backend "cluster_backend_mock_realtime" before (eg in backend.vcl)
+# and whole configuration merge with includes in /etc/varnish/default.vcl
 
 sub vcl_init {
 	var.global_set("X-Apis", var.global_get("X-Apis") + "; mock:realtime=remote");
