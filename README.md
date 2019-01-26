@@ -2,7 +2,7 @@
 
 Your Web API may be faster.
 
-Prepared configuration library of vcl files for varnish-cache, primary designed for HTTP REST like APIs or key value database caching as passthrough http cache, allows Edge Side Includes (ESI) composition or loopback tranformations when one resource needs transforms to another representation but needs propagate TTL to minimalize cache inconsistency (backend application can requests back to vartier for example full data json of resource to return only some json keys or mixed more independent data resource to one).
+Prepared configuration library of [vcl](https://varnish-cache.org/docs/6.0/reference/vcl.html) files for [varnish-cache](https://varnish-cache.org/), primary designed for HTTP REST like APIs or key value database caching as passthrough http cache, allows [Edge Side Includes (ESI)](https://varnish-cache.org/docs/6.0/users-guide/esi.html) composition or loopback tranformations when one resource needs transforms to another representation but needs propagate TTL to minimalize cache inconsistency (backend application can requests back to vartier for example full data json of resource to return only some json keys or mixed more independent data resource to one).
 
 Vartier is more architectural cache pattern implemented with varnish for specific problem, but IMHO principles used in vartier can be used in application itself, with nginx and lua, in workers behind Cloudflare or in AWS lambda with Elasticache.
 
@@ -19,7 +19,7 @@ Vartier tries to solve one of the biggest developer problem, it is called "simpl
  * lists of objects can be solved with ESI composing, but its not dogma, also note that microcaching layer use special header to have another cache policy than resource itself
  * staled (not fresh) data are not mostly problem
  * try every fetch from backend to be as simple and fast as possible
- * don't use too long lists (use some kind of force client paginate)
+ * don't use too long ESI lists (use some kind of force client paginate)
  * shallow recursion in ESI is not a problem (lists or html with ESI are 1 level recursion)
  * if use recursion ESI, avoiding cycles references is possible
  * you can use vartier as source for another backend response (xml to json tranformatione) or combine more resources into newone, but you need transparently add xkey tags and resend Age header or compute new TTL to minimalize cache inconsistencies.
@@ -79,3 +79,7 @@ Vartier can be used in clusters but scenario can vary for your application archi
   * Cascade mirror vartier which use as backends another vartier with same route configuration (API routes are transparently propagated, everything is HTTP request) - Practical if you have not problem with tradeoff between slightly cache aging, but has problem with latency or unstable network between datacenters.
   * Vartier is designed to allow clientside bypass of ESI expansion for fetching raw objects fragments to another instance of Vartier server with transparent propagation TTL and AGE. With some backend log stream parser (not included in this project) and direct passthrough route cache refetch mechanism can be used to synchronize caches between cluster from backends (consistent) or from another vartier cache (faster but needs changes in VCL). So how much complex architecture you use is on you.
   * @TODO notice about development mirror
+  
+  ## Performance
+  
+  For now i don't have exactly measures, but from simple test is not problem to deliver one digit thousands and more responses per seconds (2-20 - vary on response body size and complexity of ESI) on normal developer laptop with Core i5 2.6Ghz/2 Core with HT (4 core) with 8GB RAM. Benchmark is done from localhost to localhost with concurency 100 with [siege](https://github.com/JoeDog/siege). 
