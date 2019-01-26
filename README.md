@@ -37,11 +37,11 @@ Vartier allows two complementary cache invalidation mechanism.
  
 Purge by xkey tag or more tags at once (soft or hard) on dedicated route behind ACL - If backend "tags" their responses with *xkey http header*, cache can be purged on special route without knowledge where resource in cache is present (use vmod-xkey module). Can be used one or more xkey tags if needed for both tagging and ivalidation.
 
-### Direct passthrough route cache refreshing
+### Direct passthrough URL cache refreshing
 
 If you don't know what is in this route but wants refetch fresh data to cache recursively for one or all ESI fragments.
 
-This *may be slow* but returns most freshed data without purging cache if something fails and minimal impact to paralel normal requests which may still return staled data. It is good for slowly generating backends routes - which is better on cron refresh or refresh cache on database/storage trigered change. Can be also used when accident on backend occurs and needs refresh incosistent data somewhere fastly without purge whole cache elsewhere or when you temporary needs faster propagation of some data. Currently without ACL but it is possible to add it to code.
+With client sending to URL *"X-Vartier-Refresh: true"* header (or localy http method REFRESH) triggers [hash_always_miss mechanism](https://varnish-cache.org/docs/6.0/reference/vcl.html) which *may be slow* but returns most freshed data without purging cache if something fails and minimal impact to paralel normal requests which may still return staled data. It is good for slowly generating backends URLs - which are better independently cron like fills or refresh cache on database/storage trigered change. Can be also used when accident on backend occurs and needs refresh incosistent data somewhere fastly without purge whole cache elsewhere or when you temporary needs faster propagation of some data. Currently without ACL but it is possible to add it to code.
 
 ## Compatibility and requirements
 
@@ -78,7 +78,7 @@ Vartier can be used in clusters but scenario can vary for your application archi
 
   * horizontal scaling with more servers to gain more bandwith, more CPU or more RAM, it may require some another balancing mechanism.   Need to know that every vartier instance has its independent cache (nothing strange).
   * Cascade mirror vartier which use as backends another vartier with same route configuration (API routes are transparently propagated, everything is HTTP request) - Practical if you have not problem with tradeoff between slightly cache aging, but has problem with latency or unstable network between datacenters.
-  * Vartier is designed to allow clientside bypass of ESI expansion for fetching raw objects fragments to another instance of Vartier server with transparent propagation TTL and AGE. With some backend log stream parser (not included in this project) and direct passthrough route cache refetch mechanism can be used to synchronize caches between cluster from backends (consistent) or from another vartier cache (faster but needs changes in VCL). So how much complex architecture you use is on you.
+  * Vartier is designed to allow clientside bypass of ESI expansion for fetching raw objects fragments to another instance of Vartier server with transparent propagation TTL and AGE. With some backend log stream parser (not included in this project) and direct passthrough URL cache refetch mechanism can be used to synchronize caches between cluster from backends (consistent) or from another vartier cache (faster but needs changes in VCL). So how much complex architecture you use is on you.
   * @TODO notice about development mirror
   
   ## Performance
