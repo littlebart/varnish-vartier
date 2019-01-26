@@ -24,6 +24,7 @@ Vartier tries to solve one of the biggest developer problem, it is called "simpl
  * if use recursion ESI, avoiding cycles references is possible
  * you can use vartier as source for another backend response (xml to json tranformatione) or combine more resources into newone, but you need transparently add xkey tags and resend Age header or compute new TTL to minimalize cache inconsistencies.
  * if fast generating response from backend is problem and resource is very few times requested (one days exports etc.), use cron like pregenerating
+ * vartier config stays minimal as possible, mostly fall to default varnish buildin.vcl and trying don't force you to bypass it if you wants allow POST or PUT mechanism to routes for save resource or use routes with Cache-Control: no-cache (varnish listen to your backend responses and their headers)
 
  * if you have every object in cache for at least some TTL you can for that TTL time shutdown the backends and there is very little probability that somebody will notice any problem 
 
