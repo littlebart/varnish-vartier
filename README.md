@@ -1,12 +1,14 @@
 # Vartier project
 
-Your Web API may be faster.
+Your Web or API may be faster. Looking for project contributor/consultant.
 
-Prepared configuration library of [vcl](https://varnish-cache.org/docs/6.0/reference/vcl.html) files for [varnish-cache](https://varnish-cache.org/), primary designed for HTTP REST like APIs or key value database caching as passthrough http cache, allows [Edge Side Includes (ESI)](https://varnish-cache.org/docs/6.0/users-guide/esi.html) composition or loopback tranformations when one resource needs transforms to another representation but needs propagate TTL to minimalize cache inconsistency (backend application can requests back to vartier for example full data json of resource to return only some json keys or mixed more independent data resource to one).
+Project contains prepared configuration library of [vcl](https://varnish-cache.org/docs/6.0/reference/vcl.html) files for [varnish-cache](https://varnish-cache.org/), primary designed for HTTP REST like APIs or key value database caching as passthrough http cache, allows [Edge Side Includes (ESI)](https://varnish-cache.org/docs/6.0/users-guide/esi.html) composition or loopback tranformations when one resource needs transforms to another representation but needs propagate TTL to minimalize cache inconsistency (backend application can requests back to vartier for example full data json of resource to return only some json keys or mixed more independent data resource to one).
 
-Vartier is more architectural cache pattern implemented with varnish for specific problem, but IMHO principles used in vartier can be used in application itself, with nginx and lua, in workers behind Cloudflare or in AWS lambda with Elasticache.
+Vartier is more an architectural cache pattern implemented with varnish for specific problem, inspired by other existing solutions and because i use varnish for years with good experiences. IMHO principles used in vartier can be used in application itself, implemented with nginx and lua, with workers behind Cloudflare or in AWS with lambda and Elasticache.
 
-Vartier tries to solve one of the biggest developer problem, it is called "simple cache invalidation".
+Vartier tries to solve one of the biggest developer problem, it is called "simple cache invalidation" for what varnish provides buildin solutions.
+
+@TODO add request flow schemes
 
 ## Basic ideas
 
