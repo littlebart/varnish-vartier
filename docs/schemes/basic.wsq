@@ -1,0 +1,69 @@
+participant Client as Rq
+note left of Rq
+Initial request
+data not in cache
+end note
+participant Vartier Micro Cache as Vm
+participant Vartier Esi as Ve
+participant Backend as B
+Rq->+Vm: <<request>>
+Vm->*+Ve: <<client miss>>
+Ve->*+B: <<vartier miss>>
+B->-Ve: <<cache>>
+opt if contains esi
+loop Fetch N times
+Ve->Ve: <<subrequest>>
+Ve->+B: <<vartier miss>>
+B->-Ve: <<cache>>
+end loop
+end opt
+note over Ve
+composed
+end note
+Ve->-Vm: <<save to micro cache>>
+Vm->-Rq: <<response>>
+note left of Rq
+Another request
+valid data in cache
+end note
+Rq->+Vm: <<request>>
+Vm->-Rq: <<cached response>>
+note left of Rq
+Another request
+valid data in cache
+allow stalled
+end note
+Rq->+Vm: <<request>>
+Vm->-Rq: <<stalled response>>
+alt <<async>>
+note over Vm
+Cache refreshed
+asynchronously in background
+end note
+Vm-->+Ve: <<refetch>>
+opt if cache
+note right of Ve
+Use cache
+end note
+else refetch
+Ve->+B: <<fetch>>
+B->-Ve: <<fresh cache>>
+end opt
+opt if contains esi
+loop N times
+opt if cache
+note right of Ve
+Use cache
+end note
+else
+Ve->Ve: <<subrequest>>
+Ve->+B:
+B->-Ve:
+end opt
+end loop
+end opt
+note over Ve
+recomposed esi
+end note
+Ve-->-Vm: <<freshed micro cache>>
+end 

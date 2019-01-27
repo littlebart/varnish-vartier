@@ -10,7 +10,11 @@ Vartier tries to solve one of the biggest developer problem, it is called "simpl
 
 Vartier adds defaultly info about resource ttl, grace (how long cache can be returned after expire), hits count (higher than 1 is optimal) and restarts (detect problems) of requested cache layer in X-TTL response header.
 
-@TODO add request flow schemes
+## Request flow schemes
+
+
+### Non cached + full cached + partial cached
+![Request flow scheme](/docs/schemes/basic.png)
 
 ## Basic ideas
 
