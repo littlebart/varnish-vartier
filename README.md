@@ -8,6 +8,8 @@ Vartier is more an architectural cache pattern implemented with varnish for spec
 
 Vartier tries to solve one of the biggest developer problem, it is called "simple cache invalidation" for what varnish provides buildin solutions.
 
+Vartier adds defaultly info about resource ttl, grace (how long cache can be returned after expire), hits count (higher than 1 is optimal) and restarts (detect problems) of requested cache layer in X-TTL response header.
+
 @TODO add request flow schemes
 
 ## Basic ideas
