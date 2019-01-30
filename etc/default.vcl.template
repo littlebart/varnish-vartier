@@ -1,0 +1,43 @@
+vcl 4.0;
+/* Example template, edit and rename it to default.vcl */
+## VARTIER default.vcl TEMPLATE
+
+## THIS VMODS ARE IMPORTED IN (CAN BE ONLY ONCE PER ALL VCLs)
+
+import std;
+import directors;
+import saintmode;
+
+# file: vartier.0.sub.vcl
+ # import var;
+
+# file: vartier.10.invalidation.vcl
+ # import xkey;
+
+## HERE WILL BE ASSEMBLED INCLUDES - USE IN CORRECT ORDERS (asciibetical)
+
+# routines
+include "/etc/varnish/conf.d/vartier.0.sub.vcl";
+# invalidation
+include "/etc/varnish/conf.d/vartier.10.invalidation.vcl";
+# vartier core head parts
+include "/etc/varnish/conf.d/vartier.11.core.head.vcl";
+# flags settings head
+include "/etc/varnish/conf.d/vartier.12.flags.head.vcl";
+
+# API SECTION EDITABLE
+# one or more api that you want to use - combination of backends and api vcl_revc configuration per route - 
+# @see conf.d/vartier.20.api_example.0.vcl.template
+# Hint: if you use more apis, one api can call ESI includes from any other accessible api ;-)
+include "/etc/varnish/conf.d/vartier.20.api_example.0.vcl";
+# include "/etc/varnish/conf.d/vartier.20.api_authors.0.vcl";
+# include "/etc/varnish/conf.d/vartier.20.api_songs.0.vcl";
+# ...
+# /API SECTION EDITABLE
+
+# flags settings tail
+include "/etc/varnish/conf.d/vartier.97.flags.tail.vcl";
+# error handling routine, stale-while-error mechanism
+include "/etc/varnish/conf.d/vartier.98.backend.error.vcl";
+# vartier core tail parts
+include "/etc/varnish/conf.d/vartier.99.core.tail.vcl";

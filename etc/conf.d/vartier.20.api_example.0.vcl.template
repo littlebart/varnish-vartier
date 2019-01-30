@@ -1,0 +1,81 @@
+/**
+ * EXAMPLE EXAMPLE EXAMPLE
+ * Example Vartier VCL configuration for one API and two backends (free to edit)
+ * Name api_example is derived from route dir localhost:6081/api:example/ backend are on localhost:3001/api:example/ and localhost:3002/api:example/
+ * Add this file to the /etc/varnish/conf.d/vartier.20.api_example.vcl an include in /etc/varnish/default.vcl (see to default.vcl.template)
+ * 
+ * If varnish is installed from deb package is better to divert original /etc/varnish/default.vcl and reload varnish or if you wants to avoid with conflicting default.vcl from package use another name like /etc/varnish/api_example.vcl but you will need then edit systemctl unit template or use your own service start scripts (why complicate it)
+ */
+
+// Suggestion to name backend by api name, backend server host and port
+backend server_api_example_localhost_3001_0 {
+	.host = "localhost";
+	.port = "3001";
+	.connect_timeout = 3.5s;
+	.first_byte_timeout = 10s;
+	.between_bytes_timeout = 60s;
+	.probe = {
+		.url = "/healthcheck";
+		.timeout = 1s;
+		.interval = 3s;
+		.window = 5;
+		.threshold = 3;
+	}
+}
+
+backend server_api_example_localhost_3002_1 {
+	.host = "localhost";
+	.port = "3002";
+	.connect_timeout = 3.5s;
+	.first_byte_timeout = 10s;
+	.between_bytes_timeout = 60s;
+	.probe = {
+		.url = "/healthcheck";
+		.timeout = 1s;
+		.interval = 3s;
+		.window = 5;
+		.threshold = 3;
+	}
+}
+
+sub vcl_init {
+	new director__api_example = directors.round_robin();
+	director__api_example.add_backend(server_api_example_localhost_3001_0);
+	director__api_example.add_backend(server_api_example_localhost_3002_1);
+}
+
+// register API to global response header
+sub vcl_init {
+	var.global_set("X-Apis", var.global_get("X-Apis") + "; api:example=remote");
+}
+
+sub vcl_recv {
+	// here is api:example
+	if (req.url ~ "^/api:example/") {
+		// this req header is mandatory (use api name) because vartier use it to detects that this api is registered
+		// else returns error response (default bahavior, can be changed)
+		set req.http.X-Vartier-Current-Api = "api:example";
+		
+		// normalize querystrings if needed not all apis needs it
+		if (!var.get("sorted")) {
+			set req.url = std.querysort(req.url);
+			var.set("sorted", "1");
+		}
+
+		// anything out of microcache loop layer is send to valid backend
+		if (req.http.X-Vartier-Level != "client") {
+			set req.backend_hint = director__api_example.backend();
+		}
+	}
+	// FAQ: You dont see there any return? It is OK, because vartier mostly use default builtin.vcl in varnish ;)
+}
+
+sub vcl_deliver {
+	// Hide Vartier info for clients on this API
+	if (req.url ~ "^/api:example/" && req.http.X-Vartier-Level == "client") {
+		unset resp.http.X-Vartier-Apis;
+	}
+}
+
+// if you want use some other sub vcl_* use it here, if you know what they do - for your custom error handling, custom error status, retrying, force ttl, acl, banning some clients etc.
+// Try to avoid any unnecessary return calls
