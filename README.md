@@ -42,7 +42,7 @@ Vartier allows two complementary cache invalidation/freshening mechanism.
 
  ### Purge xkey mechanism
  
-Purge by xkey tag or more tags at once (soft or hard) on dedicated route behind ACL - If backend "tags" their responses with *xkey http header*, cache can be purged on special route without knowledge where resource in cache is present (use vmod-xkey module). Can be used one or more xkey tags if needed for both tagging and ivalidation.
+Purge by xkey tag or more tags at once (soft or hard) on dedicated route behind ACL - If backend "tags" their responses with *xkey http header*, cache can be purged on special route without knowledge where resource in cache is present (use vmod-xkey module). Can be used one or more xkey tags if needed for both tagging and invalidation.
 
 ### Direct passthrough URL cache refreshing
 
