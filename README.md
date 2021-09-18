@@ -52,10 +52,10 @@ With client sending to URL *"X-Vartier-Refresh: true"* header (or localy http me
 
 ## Compatibility and requirements
 
- * require [varnish-cache](https://varnish-cache.org/) http accelerator (>= 5.2.1, < 6.0.x - because varnish-modules are not compatible with new 6.1.x yet)
- * require [varnish-modules](https://github.com/varnish/varnish-modules) (>= 0.12.0) with modules vmod-xkey, vmod-saintmode and vmod-var 
+ * require [varnish-cache](https://varnish-cache.org/) http accelerator (>= 6.0.x LTS and < 7.0)
+ * require [varnish-modules](https://github.com/varnish/varnish-modules) (>= 0.18.0) with modules vmod-xkey, vmod-saintmode and vmod-var
  * designed for linux, especialy Debian like systems (Debian, Ubuntu) using /etc/varnish configs directory
- * @TODO - 2021-09-18 trying to use Varnish 6.0 LTS, current version is 7.0 but it is too young to use, wait for stability but features are promising - new PCRE2, structured fields in headers, glob for include etc.
+ * @TODO - 2021-09-18 current Varnish version is 7.0.0 (compatible with varnish-modules >= 0.19.0) but it is too young to use, waiting for stability, but features are promising - new PCRE2, structured fields in headers, glob for include etc.
  
  You must have some little devops knowledge (know how to install/build and configure varnish-cache server and varnish-modules and don't be lazy read some docs) also is better to be familiar with http requesting and sending http headers to fully use vartier potential. Basic knowledge of VCL configuration language for Varnish is needed.
  
