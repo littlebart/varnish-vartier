@@ -9,7 +9,8 @@ sub vcl_hit {
 	if (obj.ttl < 0s && obj.ttl + obj.grace > 0s && req.http.X-Vartier-Flags ~ "(^|[, ]+)cache:expired:backend=force-fetch([, ]+|$)") {
 		if (req.restarts == 0) {
 			set req.http.sie-enabled = true;
-			return (miss);
+			set req.hash_always_miss = true;
+			return (restart);
 		} else {
 			set req.http.sie-abandon = true;
 			return (deliver);
@@ -39,6 +40,7 @@ sub vcl_backend_error {
 sub vcl_synth {
 	if (resp.status == 503 && req.http.sie-enabled) {
 		unset req.http.sie-enabled;
+		set req.hash_always_miss = false;
 		return (restart);
 	}
 }
